@@ -7,13 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TareaController.class)
+@WebMvcTest(controllers = TareaController.class)
 class TareaControllerTest {
 
     @Autowired
@@ -30,7 +31,8 @@ class TareaControllerTest {
 
         when(service.buscarPorId(1L)).thenReturn(t);
 
-        mockMvc.perform(get("/api/tareas/1"))
+        mockMvc.perform(get("/api/tareas/1")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.titulo").value("Test"));
     }
@@ -40,7 +42,8 @@ class TareaControllerTest {
         when(service.buscarPorId(99L))
                 .thenThrow(new EntityNotFoundException("no encontrada"));
 
-        mockMvc.perform(get("/api/tareas/99"))
+        mockMvc.perform(get("/api/tareas/99")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 }
